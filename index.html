@@ -92,6 +92,7 @@
 
     /* Form */
     .form-group { margin-top: 1.25rem; }
+    .form-box { margin-top: 1.25rem; }
     .form-label {
       display: flex; justify-content: space-between; align-items: center;
       font-size: 0.8rem; font-weight: 500; margin-bottom: 0.375rem;
@@ -370,7 +371,6 @@
         recBadgeText: document.getElementById("recBadgeText"),
       };
 
-      // TrendingUp icon SVG string
       const iconTrendingUp = `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="22 7 13.5 15.5 9 11 2 17"/><path d="M22 7v5"/><path d="M2 17v5"/></svg>`;
       const iconAlert = `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><line x1="12" x2="12" y1="8" y2="12"/><line x1="12" x2="12.01" y1="16" y2="16"/></svg>`;
       const iconCheck = `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><path d="m9 12 2 2 4-4"/></svg>`;
@@ -411,7 +411,7 @@
             regimeAtualLabel: SIMPLES_RATES[state.setor].anexo,
             recomendacao,
             explicacao: recomendacao === "Considerar regime híbrido"
-              ? "Com muitos clientes PJ, recolher CBS/IBS 'por fora' do Simples poderá tornar suas notas mais atrativas — os clientes ganham crédito tributário e tendem a preferir seu negócio. O custo extra tende a ser compensado pelo aumento de competitividade."
+              ? "Com muitos clientes PJ, recolher CBS/IBS 'por fora' do Simples pode tornar suas notas mais atrativas — os clientes ganham crédito tributário e tendem a preferir seu negócio. O custo extra tende a ser compensado pelo aumento de competitividade."
               : "Seu perfil é majoritariamente B2C (venda ao consumidor final). Manter o Simples Nacional tradicional continua sendo a opção mais simples e econômica após a reforma.",
           };
         }
@@ -426,7 +426,6 @@
         els.pjVal.textContent = state.pctClientesPJ + "%";
         els.insumosVal.textContent = state.pctInsumos + "%";
 
-        // Visibility of PJ / Insumos
         if (state.porte === "mei") {
           els.pjGroup.classList.add("hidden");
           els.insumosGroup.classList.add("hidden");
@@ -435,13 +434,11 @@
           els.insumosGroup.classList.remove("hidden");
         }
 
-        // Update porte buttons
         els.porteBtns.forEach(btn => {
           if (btn.dataset.value === state.porte) btn.classList.add("active");
           else btn.classList.remove("active");
         });
 
-        // Result cards
         els.sublabelAtual.textContent = r.regimeAtualLabel;
         els.valAtual.innerHTML = brl(r.atualValor) + "<span>/mês</span>";
         els.pctAtual.textContent = "≈ " + r.atualPct.toFixed(1).replace(".", ",") + "% do faturamento";
@@ -460,7 +457,6 @@
         if (r.hibridoValor <= r.atualValor) els.cardHibrido.classList.add("good");
         else els.cardHibrido.classList.add("warn");
 
-        // Recommendation
         els.recTitle.textContent = r.recomendacao;
         els.recText.textContent = r.explicacao;
 
@@ -483,7 +479,6 @@
         }
       }
 
-      // Event bindings
       els.porteBtns.forEach(btn => {
         btn.addEventListener("click", () => {
           state.porte = btn.dataset.value;
@@ -496,7 +491,6 @@
       els.pctPJ.addEventListener("input", e => { state.pctClientesPJ = +e.target.value; render(); });
       els.pctInsumos.addEventListener("input", e => { state.pctInsumos = +e.target.value; render(); });
 
-      // Init: set default to ME
       state.porte = "me";
       els.setor.value = state.setor;
       render();
