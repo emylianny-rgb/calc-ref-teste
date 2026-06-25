@@ -42,17 +42,10 @@
   main{padding:28px 0 40px;display:grid;grid-template-columns:1fr;gap:20px}
   @media(min-width:900px){main{grid-template-columns:2fr 3fr}}
   .card{background:var(--card);border:1px solid var(--border);border-radius:var(--radius);box-shadow:var(--shadow);padding:24px}
-  .card.form-card{align-self:start} /* Corrige o espaço vazio abaixo do faturamento no desktop */
   .card h3{font-size:17px;font-weight:600}
   .card .sub{font-size:13px;color:var(--muted);margin-top:2px}
-  .field{margin-top:24px}
+  .field{margin-top:20px}
   .field label{display:block;font-size:13px;font-weight:500;margin-bottom:8px}
-  
-  /* Nova estrutura para o título do Faturamento (Evita que os textos fiquem grudados) */
-  .row-label{display:flex;justify-content:space-between;align-items:center;width:100%;margin-bottom:8px;gap:16px}
-  .row-label label{margin-bottom:0!important;font-size:13px;font-weight:500}
-  .row-label .val{color:var(--primary);font-weight:600;white-space:nowrap}
-
   .opts{display:grid;grid-template-columns:repeat(3,1fr);gap:8px}
   .opt{cursor:pointer;text-align:left;padding:12px;border:1px solid var(--border);border-radius:10px;background:#fff;transition:all .15s}
   .opt:hover{border-color:rgba(0,94,184,.4)}
@@ -61,7 +54,9 @@
   .opt span{font-size:11px;color:var(--muted)}
   select{width:100%;padding:10px 12px;border:1px solid var(--border);border-radius:10px;background:#fff;font-size:14px;color:var(--text)}
   select:focus{outline:none;box-shadow:0 0 0 2px var(--ring);border-color:var(--primary)}
-  input[type=range]{width:100%;accent-color:var(--primary);margin-top:8px;display:block}
+  .row{display:flex;justify-content:space-between;align-items:center}
+  .row .val{color:var(--primary);font-weight:600}
+  input[type=range]{width:100%;accent-color:var(--primary)}
   /* results */
   .results{display:grid;gap:16px}
   .grid2{display:grid;grid-template-columns:1fr;gap:16px}
@@ -85,7 +80,7 @@
   .perfil .reco .ic{flex:0 0 40px;height:40px;background:rgba(0,94,184,.1);color:var(--primary);border-radius:10px;display:flex;align-items:center;justify-content:center}
   .perfil .reco b{display:block;font-size:14px;font-weight:600}
   .perfil .reco p{margin:4px 0 0;font-size:13.5px;color:var(--muted);line-height:1.55}
-  /* notes blocks */
+  /* mei note */
   .meinote{background:#fff;border:1px solid var(--border);border-radius:var(--radius);padding:20px;display:flex;gap:12px}
   .meinote .ic{flex:0 0 40px;height:40px;background:rgba(22,163,74,.15);color:var(--success);border-radius:10px;display:flex;align-items:center;justify-content:center}
   .meinote b{font-size:15px}
@@ -130,7 +125,7 @@
 
 <main class="wrap">
   <!-- Formulário -->
-  <section class="card form-card">
+  <section class="card">
     <h3>Seu negócio</h3>
     <p class="sub">Preencha os dados para simular</p>
 
@@ -154,27 +149,15 @@
     </div>
 
     <div class="field">
-      <!-- Estrutura corrigida para evitar textos grudados -->
-      <div class="row-label">
-        <label for="fat">Faturamento mensal</label>
-        <span class="val" id="fatLabel">R$ 15.000</span>
-      </div>
+      <label class="row"><span>Faturamento mensal</span><span class="val" id="fatLabel">R$ 15.000</span></label>
       <input type="range" id="fat" min="1000" max="30000" step="1000" value="15000" />
     </div>
   </section>
 
   <!-- Resultados -->
   <section class="results">
-    <!-- Perfil do negócio renderizado no topo (antes do cálculo) -->
-    <div id="perfilBox"></div>
-    
-    <!-- Cartões de Cálculo de Resultado -->
     <div class="grid2" id="cards"></div>
-    
-    <!-- Explicação Legal dos 3.6 Milhões (Exibida colada aos cálculos apenas quando o porte for EPP) -->
-    <div id="eppBox"></div>
-    
-    <!-- Notas para o MEI -->
+    <div id="perfilBox"></div>
     <div id="meiBox"></div>
 
     <div class="tl">
@@ -192,10 +175,13 @@
 <footer>Feito para apoiar pequenos empresários brasileiros · Inspirado nos simuladores da RFB, Contabilizei, IOB e OSP.</footer>
 
 <script>
+// Alíquota combinada externa de transição aplicável nos exercícios de 2027 e 2028 (CBS ~8,8% + IBS ~0,1%)
 const CBS_IBS_TRANSICAO = 0.089;
+
 const state = { porte:"me", setor:"comercio", fat:15000, perfil:"b2c" };
 const brl = v => v.toLocaleString("pt-BR",{style:"currency",currency:"BRL",maximumFractionDigits:0});
 
+// Função para calcular a alíquota efetiva atual e o respectivo percentual de redução do DAS (Anexo 20 da LC 214/2025)
 function obterRegrasFaixa(setor, fatMensal) {
   const anual = fatMensal * 12;
   let faixa = 1;
@@ -204,7 +190,7 @@ function obterRegrasFaixa(setor, fatMensal) {
   else if (anual <= 360000) faixa = 2;
   else if (anual <= 720000) faixa = 3;
   else if (anual <= 1800000) faixa = 4;
-  else faixa = 5;
+  else faixa = 5; // Capped na 5ª faixa, teto do regime híbrido por opção (3.6 Milhões)
 
   if (setor === 'comercio') {
     const nominal = [0.04, 0.073, 0.095, 0.107, 0.143][faixa-1];
@@ -274,10 +260,19 @@ function render(){
   const r = compute();
   document.getElementById("fatLabel").textContent = brl(state.fat);
 
+  const cards = document.getElementById("cards");
+  let html = resCard({label:"Regime atual", sub:r.regimeAtualLabel, val:r.atual, pct:r.pctA, tone:"neutral"});
+  if(r.hib){
+    html += resCard({label:"Regime híbrido (2027/2028)", sub:"CBS/IBS fora do DAS (foco nos exerc. 27 e 28)", val:r.hibTot, pct:r.hibPct, tone:"warn", breakdown:[["DAS Reduzido (Anexo 20)",brl(r.dasRed)],["CBS + IBS Transição (8,9%)",brl(r.cbsIbs)]]});
+  } else {
+    html += resCard({label:"Após a reforma", sub:"MEI não é impactado — DAS fixo permanece", val:r.atual, pct:r.pctA, tone:"good"});
+  }
+  cards.innerHTML = html;
+
   const pbox = document.getElementById("perfilBox");
-  if(state.porte !== "mei"){
+  if(r.hib){
     const p = PERFIL[state.perfil];
-    pbox.innerHTML = `<div class="perfil" style="margin-bottom: 8px;">
+    pbox.innerHTML = `<div class="perfil">
       <div class="lbl">Perfil do seu negócio</div>
       <p class="help">Informativo — orienta a leitura do resultado, não altera o cálculo.</p>
       <div class="opts" id="opt-perfil">
@@ -288,50 +283,35 @@ function render(){
       <div class="reco"><div class="ic">${p.ic}</div><div><b>${p.t}</b><p>${p.d}</p></div></div>
     </div>`;
     pbox.querySelectorAll("#opt-perfil .opt").forEach(b=>b.addEventListener("click",()=>{state.perfil=b.dataset.v;render();}));
-  } else {
-    pbox.innerHTML = "";
-  }
-
-  const cards = document.getElementById("cards");
-  let html = resCard({label:"Regime atual", sub:r.regimeAtualLabel, val:r.atual, pct:r.pctA, tone:"neutral"});
-  if(r.hib){
-    html += resCard({label:"Regime híbrido (2027/2028)", sub:"CBS/IBS fora do DAS (foco nos exerc. 27 e 28)", val:r.hibTot, pct:r.hibPct, tone:"warn", breakdown:[["DAS Reduzido (Anexo 20)",brl(r.dasRed)],["CBS + IBS Transição (8,9%)",brl(r.cbsIbs)]]});
-  } else {
-    html += resCard({label:"Após a reforma", sub:"MEI não é impactado — DAS fixo permanece", val:r.atual, pct:r.pctA, tone:"good"});
-  }
-  cards.innerHTML = html;
-
-  const ebox = document.getElementById("eppBox");
-  if(state.porte==="epp"){
-    ebox.innerHTML = `<div class="meinote" style="border-color: rgba(217,119,6,.4); background: rgba(217,119,6,.03); margin-top: 4px;"><div class="ic" style="background: rgba(217,119,6,.15); color: var(--warning);"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg></div><div><b>Explicação Legal: Limite de R$ 3,6 Milhões no Regime Híbrido (<a href="https://www.planalto.gov.br/ccivil_03/leis/lcp/lcp214.htm" target="_blank">LC 214/2025</a>)</b><p>Embora o teto limite para enquadramento como EPP permaneça fixado em R$ 4,8M/ano, as regras da Reforma Tributária preservam o <b>sublimite de R$ 3,6 milhões</b> para recolhimento unificado do IBS e da CBS. Até R$ 3,6M, a apuração apartada fora do DAS é uma <b>escolha opcional</b> da empresa (Regime Híbrido). Acima deste sublimite de R$ 3,6M/ano, o negócio é legalmente obrigado a apurar a CBS e o IBS pelo regime regular de débito/crédito, perdendo o direito à opção.</p></div></div>`;
-  } else {
-    ebox.innerHTML = "";
-  }
+  } else pbox.innerHTML = "";
 
   const mbox = document.getElementById("meiBox");
   if(state.porte==="mei"){
-    mbox.innerHTML = `<div class="meinote"><div class="ic"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg></div><div><b>MEI não foi impactado pela Reforma Tributária</b><p>O DAS fixo mensal continua valendo integralmente. Avalie desenquadrar do MEI apenas se ultrapassar o limite de R$ 81.000/ano ou se seus clientes PJ exigirem obrigatoriamente notas fiscais com repasse de créditos de CBS/IBS.</p></div></div>`;
+    mbox.innerHTML = `<div class="meinote"><div class="ic"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg></div><div><b>MEI não foi impactado pela Reforma Tributária</b><p>O DAS fixo mensal continua valendo. Avalie sair do MEI apenas se ultrapassar o limite de R$ 81.000/ano ou se seus clientes PJ exigirem nota com crédito de CBS/IBS.</p></div></div>`;
+  } else if(state.porte==="epp"){
+    mbox.innerHTML = `<div class="meinote" style="border-color: rgba(217,119,6,.4); background: rgba(217,119,6,.03);"><div class="ic" style="background: rgba(217,119,6,.15); color: var(--warning);"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg></div><div><b>Explicação Legal: Limite de R$ 3,6 Milhões no Regime Híbrido (<a href="https://www.planalto.gov.br/ccivil_03/leis/lcp/lcp214.htm" target="_blank">LC 214/2025</a>)</b><p>Embora o teto para enquadramento como EPP seja de R$ 4,8M/ano, a legislação da Reforma Tributária preserva o <b>sublimite de R$ 3,6 milhões</b> para o recolhimento unificado de tributos sobre o consumo. Até R$ 3,6M, a apuração externa de CBS e IBS é uma <b>escolha opcional</b> da empresa (Regime Híbrido). Acima de R$ 3,6M/ano, o negócio atinge obrigatoriamente o sublimite, sendo forçado a apurar CBS e IBS fora do Simples por imposição legal (débito/crédito), perdendo o direito à opção.</p></div></div>`;
   } else {
     mbox.innerHTML = "";
   }
 }
 
+// Controle dinâmico da barra de faturamento baseando-se estritamente nos tetos de escolha do modelo híbrido
 document.querySelectorAll("#opt-porte .opt").forEach(b=>b.addEventListener("click",()=>{
   state.porte=b.dataset.v;
   document.querySelectorAll("#opt-porte .opt").forEach(x=>x.classList.toggle("active",x.dataset.v===state.porte));
   
   const slider = document.getElementById("fat");
   if (state.porte === "mei") {
-    slider.max = 6750;
+    slider.max = 6750; // Limite MEI: R$ 81.000 / 12 = R$ 6.750/mês
     slider.step = 250;
     if (state.fat > 6750) state.fat = 6750;
   } else if (state.porte === "me") {
-    slider.max = 30000;
+    slider.max = 30000; // Limite ME: R$ 360.000 / 12 = R$ 30.000/mês
     slider.step = 1000;
     if (state.fat > 30000) state.fat = 30000;
     if (state.fat < 1000) state.fat = 15000;
   } else if (state.porte === "epp") {
-    slider.max = 300000;
+    slider.max = 300000; // Máximo do Regime Híbrido Opcional: R$ 3.600.000 / 12 = R$ 300.000/mês
     slider.step = 5000;
     if (state.fat > 300000) state.fat = 300000;
     if (state.fat < 30000) state.fat = 100000;
