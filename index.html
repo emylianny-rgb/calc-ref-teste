@@ -32,23 +32,16 @@
   .tag{font-size:11px;color:var(--muted);background:var(--border);padding:4px 8px;border-radius:6px;font-weight:500}
   
   /* Hero */
-  .hero{background:linear-gradient(180deg,#EAF3FB 0%,#F4F7FB 100%);border-bottom:1px solid var(--border);padding:32px 0}
+  .hero {background: linear-gradient(180deg,#EAF3FB 0%,#F4F7FB 100%);border-bottom: 1px solid var(--border);/* 32px no topo, 0 nas laterais, 20px na parte inferior */
+  padding: 32px 0 20px; }
   .badge{display:inline-flex;gap:6px;align-items:center;font-size:12px;font-weight:600;padding:6px 14px;border-radius:999px;background:rgba(0,176,185,.1);color:#0a7c83;border:1px solid rgba(0,176,185,.25)}
   .hero h2{font-size:24px;font-weight:800;letter-spacing:-.02em;margin-top:16px;line-height:1.25;color:#071D31}
   .hero h2 .hl{color:var(--primary);position:relative}
   .hero p{font-size:15px;color:var(--muted);margin:12px 0 0;line-height:1.6}
   
   /* Disclaimer */
-  .disclaimer {
-  display: flex;
-  gap: 12px;
-  background: rgba(0, 176, 185, .05);
-  border: 1px solid rgba(0, 176, 185, .2);
-  padding: 16px;
-  border-radius: var(--radius);
-  /* Margem de 24px em cima e embaixo, 0 nas laterais */
-  margin: 24px 0; 
-}
+  .disclaimer {display: flex;gap: 12px;background: rgba(0, 176, 185, .05);border: 1px solid rgba(0, 176, 185, .2);padding: 16px;border-radius: var(--radius);
+  /* 20px no topo (idêntico ao fundo do hero), 0 nas laterais, 24px abaixo */margin: 20px 0 24px; }
   .disclaimer svg{flex-shrink:0;color:var(--secondary);margin-top:2px}
   .disclaimer p{margin:0;font-size:13.5px;color:#3a4a60;line-height:1.6}
   
