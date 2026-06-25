@@ -43,7 +43,7 @@
   @media(min-width:900px){main{grid-template-columns:2fr 3fr}}
   .card{background:var(--card);border:1px solid var(--border);border-radius:var(--radius);box-shadow:var(--shadow);padding:24px}
   .card h3{font-size:17px;font-weight:600}
-  .card .sub{font-size:13px;color:var(--muted);margin-top:2px}
+  .card .sub">font-size:13px;color:var(--muted);margin-top:2px}
   .field{margin-top:20px}
   .field label{display:block;font-size:13px;font-weight:500;margin-bottom:8px}
   .opts{display:grid;grid-template-columns:repeat(3,1fr);gap:8px}
@@ -80,7 +80,7 @@
   .perfil .reco .ic{flex:0 0 40px;height:40px;background:rgba(0,94,184,.1);color:var(--primary);border-radius:10px;display:flex;align-items:center;justify-content:center}
   .perfil .reco b{display:block;font-size:14px;font-weight:600}
   .perfil .reco p{margin:4px 0 0;font-size:13.5px;color:var(--muted);line-height:1.55}
-  /* mei note */
+  /* notes blocks */
   .meinote{background:#fff;border:1px solid var(--border);border-radius:var(--radius);padding:20px;display:flex;gap:12px}
   .meinote .ic{flex:0 0 40px;height:40px;background:rgba(22,163,74,.15);color:var(--success);border-radius:10px;display:flex;align-items:center;justify-content:center}
   .meinote b{font-size:15px}
@@ -112,7 +112,7 @@
   <div class="wrap hero-inner">
     <span class="badge"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3v3M12 18v3M3 12h3M18 12h3M5.6 5.6l2.1 2.1M16.3 16.3l2.1 2.1M5.6 18.4l2.1-2.1M16.3 7.7l2.1-2.1"/></svg> Simule em menos de 1 minuto</span>
     <h2>Como a <span class="hl">Reforma Tributária</span> afeta o seu negócio?</h2>
-    <p>Descubra de forma simples se vale a pena permanecer no Simples Nacional no modelo atual ou adotar o regime híbrido com <strong>CBS e IBS fora do DAS</strong> a partir de 2027.</p>
+    <p>Descubra se vale a pena manter o Simples Nacional unificado ou optar pelo modelo híbrido com <strong>CBS e IBS apurados por fora do DAS</strong>, focando nas transições de 2027/2028.</p>
   </div>
 </section>
 
@@ -134,7 +134,7 @@
       <div class="opts" id="opt-porte">
         <button class="opt" data-v="mei"><b>MEI</b><span>até R$ 81k/ano</span></button>
         <button class="opt active" data-v="me"><b>ME</b><span>até R$ 360k/ano</span></button>
-        <button class="opt" data-v="epp"><b>EPP</b><span>até R$ 4.800k/ano</span></button>
+        <button class="opt" data-v="epp"><b>EPP</b><span>até R$ 4.8M/ano</span></button>
       </div>
     </div>
 
@@ -150,52 +150,107 @@
 
     <div class="field">
       <label class="row"><span>Faturamento mensal</span><span class="val" id="fatLabel">R$ 15.000</span></label>
-      <input type="range" id="fat" min="1000" max="400000" step="1000" value="15000" />
+      <input type="range" id="fat" min="1000" max="30000" step="1000" value="15000" />
     </div>
   </section>
 
   <!-- Resultados -->
   <section class="results">
-    <div class="grid2" id="cards"></div>
+    <!-- Perfil do negócio renderizado no topo (antes do cálculo) -->
     <div id="perfilBox"></div>
+    
+    <!-- Cartões de Cálculo de Resultado -->
+    <div class="grid2" id="cards"></div>
+    
+    <!-- Explicação Legal dos 3.6 Milhões (Exibida colada aos cálculos apenas quando o porte for EPP) -->
+    <div id="eppBox"></div>
+    
+    <!-- Notas para o MEI -->
     <div id="meiBox"></div>
 
     <div class="tl">
       <h4><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><line x1="12" y1="16" x2="12" y2="12"/><line x1="12" y1="8" x2="12.01" y2="8"/></svg> Linha do tempo da Reforma</h4>
-      <div class="it"><div class="yr">2026</div><div class="desc">Optantes pelo Simples Nacional estão desobrigados do teste de CBS/IBS (art. 348, III, c, LC 214/2025). Momento de avaliar permanecer no Simples puro ou migrar para o regime híbrido em 2027.</div></div>
-      <div class="it"><div class="yr">2027</div><div class="desc">Início da transição: passam a ser cobrados CBS e IBS, e PIS/Cofins são extintos. O IPI continua nas tabelas do Simples Nacional.</div></div>
-      <div class="it"><div class="yr">2029–2032</div><div class="desc">Transição gradual: ICMS e ISS reduzem progressivamente, enquanto o IBS aumenta.</div></div>
-      <div class="it"><div class="yr">2033</div><div class="desc">Novo sistema 100% em vigor. Apenas CBS + IBS.</div></div>
+      <div class="it"><div class="yr">2026</div><div class="desc">Optantes pelo Simples Nacional estão desobrigados do teste de CBS/IBS (art. 348, III, c, <a href="https://www.planalto.gov.br/ccivil_03/leis/lcp/lcp214.htm" target="_blank">LC 214/2025</a>). Período para planejar a permanência no Simples tradicional ou a migração para o regime híbrido opcional em 2027.</div></div>
+      <div class="it"><div class="yr">2027</div><div class="desc">Início da transição prática: passam a ser cobrados CBS e IBS, extinguindo-se o PIS e a Cofins. Exercício focado nas novas regras do regime híbrido.</div></div>
+      <div class="it"><div class="yr">2029–2032</div><div class="desc">Transição federativa progressiva: o ICMS e o ISS reduzem suas alíquotas gradualmente, enquanto o IBS absorve essa carga de maneira simétrica.</div></div>
+      <div class="it"><div class="yr">2033</div><div class="desc">Novo sistema tributário inteiramente unificado. O antigo modelo de tributos sobre o consumo deixa de existir, vigorando 100% CBS e IBS.</div></div>
     </div>
 
-    <p class="note">⚠️ Simulação didática baseada em estimativas oficiais (alíquota padrão de referência ~26,5%; primeira faixa do Simples Nacional). Setores com alíquotas reduzidas, regimes específicos e créditos efetivos de insumos não são contemplados. Não substitui análise contábil personalizada. Fontes: Receita Federal, LC 214/2025.</p>
+    <p class="note">⚠️ Simulação didática focada estritamente nos parâmetros dos exercícios de 2027 e 2028 conforme regulamentado pela <a href="https://www.planalto.gov.br/ccivil_03/leis/lcp/lcp214.htm" target="_blank">LC 214/2025</a>. A alíquota teste externa ao DAS para o regime híbrido de transição é fixada em CBS (~8,8%) + IBS (~0,1%), totalizando 8,9%. A redução do DAS segue a sistemática progressiva por faixa descrita no Anexo 20 da referida lei. Regimes diferenciados ou créditos presumidos não integrados nesta simulação. Fontes: Receita Federal e <a href="https://www.planalto.gov.br/ccivil_03/leis/lcp/lcp214.htm" target="_blank">LC 214/2025</a>.</p>
   </section>
 </main>
 
 <footer>Feito para apoiar pequenos empresários brasileiros · Inspirado nos simuladores da RFB, Contabilizei, IOB e OSP.</footer>
 
 <script>
-const SIMPLES_INFO = {
-  comercio:              { anexo:"Anexo I — Comércio",                rate:0.040, substituido:0.0305 },
-  industria:             { anexo:"Anexo II — Indústria",              rate:0.045, substituido:0.0305 },
-  servicos:              { anexo:"Anexo III — Serviços",              rate:0.060, substituido:0.0340 },
-  servicos_intelectuais: { anexo:"Anexo V — Serviços intelectuais",   rate:0.155, substituido:0.0483 },
-};
-const CBS_IBS = 0.265;
+// Alíquota combinada externa de transição aplicável nos exercícios de 2027 e 2028 (CBS ~8,8% + IBS ~0,1%)
+const CBS_IBS_TRANSICAO = 0.089;
 
 const state = { porte:"me", setor:"comercio", fat:15000, perfil:"b2c" };
 const brl = v => v.toLocaleString("pt-BR",{style:"currency",currency:"BRL",maximumFractionDigits:0});
+
+// Função para calcular a alíquota efetiva atual e o respectivo percentual de redução do DAS (Anexo 20 da LC 214/2025)
+function obterRegrasFaixa(setor, fatMensal) {
+  const anual = fatMensal * 12;
+  let faixa = 1;
+  
+  if (anual <= 180000) faixa = 1;
+  else if (anual <= 360000) faixa = 2;
+  else if (anual <= 720000) faixa = 3;
+  else if (anual <= 1800000) faixa = 4;
+  else faixa = 5; // Capped na 5ª faixa, teto do regime híbrido por opção (3.6 Milhões)
+
+  if (setor === 'comercio') {
+    const nominal = [0.04, 0.073, 0.095, 0.107, 0.143][faixa-1];
+    const deducao = [0, 5940, 13860, 22500, 87300][faixa-1];
+    const rateEfetivo = anual > 0 ? (anual * nominal - deducao) / anual : 0.04;
+    const proReducao = [0.155, 0.150, 0.145, 0.141, 0.137][faixa-1];
+    return { anexo: `Anexo I — Comércio (Faixa ${faixa})`, rate: rateEfetivo, substituido: rateEfetivo * proReducao };
+  }
+  if (setor === 'industria') {
+    const nominal = [0.045, 0.078, 0.10, 0.112, 0.147][faixa-1];
+    const deducao = [0, 5940, 13860, 22500, 85500][faixa-1];
+    const rateEfetivo = anual > 0 ? (anual * nominal - deducao) / anual : 0.045;
+    const proReducao = [0.142, 0.138, 0.134, 0.130, 0.125][faixa-1];
+    return { anexo: `Anexo II — Indústria (Faixa ${faixa})`, rate: rateEfetivo, substituido: rateEfetivo * proReducao };
+  }
+  if (setor === 'servicos') {
+    const nominal = [0.06, 0.112, 0.135, 0.16, 0.21][faixa-1];
+    const deducao = [0, 9360, 17640, 35640, 125640][faixa-1];
+    const rateEfetivo = anual > 0 ? (anual * nominal - deducao) / anual : 0.06;
+    const proReducao = [0.213, 0.205, 0.198, 0.192, 0.185][faixa-1];
+    return { anexo: `Anexo III — Serviços (Faixa ${faixa})`, rate: rateEfetivo, substituido: rateEfetivo * proReducao };
+  }
+  if (setor === 'servicos_intelectuais') {
+    const nominal = [0.155, 0.18, 0.195, 0.22, 0.27][faixa-1];
+    const deducao = [0, 4500, 9900, 27900, 117900][faixa-1];
+    const rateEfetivo = anual > 0 ? (anual * nominal - deducao) / anual : 0.155;
+    const proReducao = [0.245, 0.238, 0.231, 0.224, 0.218][faixa-1];
+    return { anexo: `Anexo V — Serviços Intel. (Faixa ${faixa})`, rate: rateEfetivo, substituido: rateEfetivo * proReducao };
+  }
+}
 
 function compute(){
   if(state.porte==="mei"){
     const das = state.setor==="industria"?76.9: (state.setor==="servicos"||state.setor==="servicos_intelectuais")?75.9 : 71.9;
     return {regimeAtualLabel:"MEI — DAS mensal fixo", atual:das, pctA:(das/Math.max(state.fat,1))*100, hib:false};
   }
-  const info = SIMPLES_INFO[state.setor];
-  const trib = state.fat*info.rate;
-  const dasRed = state.fat*(info.rate-info.substituido);
-  const cbsIbs = state.fat*CBS_IBS;
-  return {regimeAtualLabel:info.anexo, atual:trib, pctA:info.rate*100, hib:true, hibTot:dasRed+cbsIbs, hibPct:((dasRed+cbsIbs)/Math.max(state.fat,1))*100, dasRed, cbsIbs};
+  
+  const info = obterRegrasFaixa(state.setor, state.fat);
+  const trib = state.fat * info.rate;
+  const dasRed = state.fat * (info.rate - info.substituido);
+  const cbsIbs = state.fat * CBS_IBS_TRANSICAO;
+  
+  return {
+    regimeAtualLabel: info.anexo, 
+    atual: trib, 
+    pctA: info.rate * 100, 
+    hib: true, 
+    hibTot: dasRed + cbsIbs, 
+    hibPct: ((dasRed + cbsIbs) / Math.max(state.fat, 1)) * 100, 
+    dasRed, 
+    cbsIbs
+  };
 }
 
 function resCard({label,sub,val,pct,tone,breakdown}){
@@ -205,7 +260,7 @@ function resCard({label,sub,val,pct,tone,breakdown}){
 
 const PERFIL = {
   b2c:{t:"Permanecer no Simples Nacional tradicional tende a ser mais vantajoso", d:"Seu cliente final (consumidor pessoa física) não aproveita crédito de CBS/IBS, então recolher esses tributos por fora do DAS aumenta sua carga sem ganho competitivo.", ic:'<svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg>'},
-  b2b:{t:"Avaliar com a contabilidade a adesão ao regime híbrido", d:"Clientes PJ valorizam notas com destaque de CBS/IBS porque geram crédito tributário. O regime híbrido pode tornar seu negócio mais competitivo, especialmente se você tem volume relevante de insumos com crédito.", ic:'<svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M6 22V4a2 2 0 0 1 2-2h8a2 2 0 0 1 2 2v18Z"/><path d="M6 12H4a2 2 0 0 0-2 2v6a2 2 0 0 0 2 2h2"/><path d="M18 9h2a2 2 0 0 1 2 2v9a2 2 0 0 1-2 2h-2"/><path d="M10 6h4"/><path d="M10 10h4"/><path d="M10 14h4"/><path d="M10 18h4"/></svg>'},
+  b2b:{t:"Avaliar com a contabilidade a adesão ao regime híbrido", d:"Clientes PJ valorizam notas com destaque de CBS/IBS porque geram crédito tributário. O regime híbrido pode tornar seu negócio mais competitivo, especialmente nos exercícios de 2027/2028.", ic:'<svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M6 22V4a2 2 0 0 1 2-2h8a2 2 0 0 1 2 2v18Z"/><path d="M6 12H4a2 2 0 0 0-2 2v6a2 2 0 0 0 2 2h2"/><path d="M18 9h2a2 2 0 0 1 2 2v9a2 2 0 0 1-2 2h-2"/><path d="M10 6h4"/><path d="M10 10h4"/><path d="M10 14h4"/><path d="M10 18h4"/></svg>'},
   meio:{t:"Decisão depende da estrutura de custos e clientes", d:"Com perfil misto, a vantagem do híbrido depende do peso real das vendas B2B, da margem e do volume de insumos. Simule cenários com seu contador antes de optar.", ic:'<svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m16 16 3-8 3 8c-.87.65-1.92 1-3 1s-2.13-.35-3-1Z"/><path d="m2 16 3-8 3 8c-.87.65-1.92 1-3 1s-2.13-.35-3-1Z"/><path d="M7 21h10"/><path d="M12 3v18"/><path d="M3 7h2c2 0 5-1 7-2 2 1 5 2 7 2h2"/></svg>'}
 };
 
@@ -213,19 +268,11 @@ function render(){
   const r = compute();
   document.getElementById("fatLabel").textContent = brl(state.fat);
 
-  const cards = document.getElementById("cards");
-  let html = resCard({label:"Regime atual", sub:r.regimeAtualLabel, val:r.atual, pct:r.pctA, tone:"neutral"});
-  if(r.hib){
-    html += resCard({label:"Regime híbrido", sub:"CBS/IBS fora do DAS (estimativa antes de créditos)", val:r.hibTot, pct:r.hibPct, tone:"warn", breakdown:[["DAS reduzido",brl(r.dasRed)],["CBS + IBS (~26,5%)",brl(r.cbsIbs)]]});
-  } else {
-    html += resCard({label:"Após a reforma", sub:"MEI não é impactado — DAS fixo permanece", val:r.atual, pct:r.pctA, tone:"good"});
-  }
-  cards.innerHTML = html;
-
+  // 1. Renderizar Perfil do negócio ANTES do cálculo (Apenas se não for MEI)
   const pbox = document.getElementById("perfilBox");
-  if(r.hib){
+  if(state.porte !== "mei"){
     const p = PERFIL[state.perfil];
-    pbox.innerHTML = `<div class="perfil">
+    pbox.innerHTML = `<div class="perfil" style="margin-bottom: 8px;">
       <div class="lbl">Perfil do seu negócio</div>
       <p class="help">Informativo — orienta a leitura do resultado, não altera o cálculo.</p>
       <div class="opts" id="opt-perfil">
@@ -236,19 +283,62 @@ function render(){
       <div class="reco"><div class="ic">${p.ic}</div><div><b>${p.t}</b><p>${p.d}</p></div></div>
     </div>`;
     pbox.querySelectorAll("#opt-perfil .opt").forEach(b=>b.addEventListener("click",()=>{state.perfil=b.dataset.v;render();}));
-  } else pbox.innerHTML = "";
+  } else {
+    pbox.innerHTML = "";
+  }
 
+  // 2. Renderizar os blocos de cálculo estruturados
+  const cards = document.getElementById("cards");
+  let html = resCard({label:"Regime atual", sub:r.regimeAtualLabel, val:r.atual, pct:r.pctA, tone:"neutral"});
+  if(r.hib){
+    html += resCard({label:"Regime híbrido (2027/2028)", sub:"CBS/IBS fora do DAS (foco nos exerc. 27 e 28)", val:r.hibTot, pct:r.hibPct, tone:"warn", breakdown:[["DAS Reduzido (Anexo 20)",brl(r.dasRed)],["CBS + IBS Transição (8,9%)",brl(r.cbsIbs)]]});
+  } else {
+    html += resCard({label:"Após a reforma", sub:"MEI não é impactado — DAS fixo permanece", val:r.atual, pct:r.pctA, tone:"good"});
+  }
+  cards.innerHTML = html;
+
+  // 3. Renderizar Caixa de Explicação Legal da EPP colada ao resultado (Exclusiva do porte EPP)
+  const ebox = document.getElementById("eppBox");
+  if(state.porte==="epp"){
+    ebox.innerHTML = `<div class="meinote" style="border-color: rgba(217,119,6,.4); background: rgba(217,119,6,.03); margin-top: 4px;"><div class="ic" style="background: rgba(217,119,6,.15); color: var(--warning);"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg></div><div><b>Explicação Legal: Limite de R$ 3,6 Milhões no Regime Híbrido (<a href="https://www.planalto.gov.br/ccivil_03/leis/lcp/lcp214.htm" target="_blank">LC 214/2025</a>)</b><p>Embora o teto limite para enquadramento como EPP permaneça fixado em R$ 4,8M/ano, as regras da Reforma Tributária preservam o <b>sublimite de R$ 3,6 milhões</b> para recolhimento unificado do IBS e da CBS. Até R$ 3,6M, a apuração apartada fora do DAS é uma <b>escolha opcional</b> da empresa (Regime Híbrido). Acima deste sublimite de R$ 3,6M/ano, o negócio é legalmente obrigado a apurar a CBS e o IBS pelo regime regular de débito/crédito, perdendo o direito à opção.</p></div></div>`;
+  } else {
+    ebox.innerHTML = "";
+  }
+
+  // 4. Notas do MEI no rodapé do bloco de cálculo
   const mbox = document.getElementById("meiBox");
   if(state.porte==="mei"){
-    mbox.innerHTML = `<div class="meinote"><div class="ic"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg></div><div><b>MEI não foi impactado pela Reforma Tributária</b><p>O DAS fixo mensal continua valendo. Avalie sair do MEI apenas se ultrapassar o limite de R$ 81.000/ano ou se seus clientes PJ exigirem nota com crédito de CBS/IBS.</p></div></div>`;
-  } else mbox.innerHTML = "";
+    mbox.innerHTML = `<div class="meinote"><div class="ic"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg></div><div><b>MEI não foi impactado pela Reforma Tributária</b><p>O DAS fixo mensal continua valendo integralmente. Avalie desenquadrar do MEI apenas se ultrapassar o limite de R$ 81.000/ano ou se seus clientes PJ exigirem obrigatoriamente notas fiscais com repasse de créditos de CBS/IBS.</p></div></div>`;
+  } else {
+    mbox.innerHTML = "";
+  }
 }
 
+// Controle dinâmico da barra de faturamento baseando-se estritamente nos tetos de escolha do modelo híbrido
 document.querySelectorAll("#opt-porte .opt").forEach(b=>b.addEventListener("click",()=>{
   state.porte=b.dataset.v;
   document.querySelectorAll("#opt-porte .opt").forEach(x=>x.classList.toggle("active",x.dataset.v===state.porte));
+  
+  const slider = document.getElementById("fat");
+  if (state.porte === "mei") {
+    slider.max = 6750; // Limite MEI: R$ 81.000 / 12 = R$ 6.750/mês
+    slider.step = 250;
+    if (state.fat > 6750) state.fat = 6750;
+  } else if (state.porte === "me") {
+    slider.max = 30000; // Limite ME: R$ 360.000 / 12 = R$ 30.000/mês
+    slider.step = 1000;
+    if (state.fat > 30000) state.fat = 30000;
+    if (state.fat < 1000) state.fat = 15000;
+  } else if (state.porte === "epp") {
+    slider.max = 300000; // Máximo do Regime Híbrido Opcional: R$ 3.600.000 / 12 = R$ 300.000/mês
+    slider.step = 5000;
+    if (state.fat > 300000) state.fat = 300000;
+    if (state.fat < 30000) state.fat = 100000;
+  }
+  slider.value = state.fat;
   render();
 }));
+
 document.getElementById("setor").addEventListener("change",e=>{state.setor=e.target.value;render();});
 document.getElementById("fat").addEventListener("input",e=>{state.fat=Number(e.target.value);render();});
 render();
