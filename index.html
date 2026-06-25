@@ -1,114 +1,257 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="pt-BR">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Calculadora da Reforma Tributária</title>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>Calculadora da Reforma Tributária — MEI, ME e EPP</title>
+<meta name="description" content="Simule o impacto da Reforma Tributária (CBS e IBS) no seu negócio. Comparação clara para MEI, microempresas e pequenos empresários." />
+<style>
+  :root{
+    --primary:#005EB8; --primary-2:#0072CE; --secondary:#00B0B9; --secondary-2:#7AC143;
+    --success:#16a34a; --warning:#d97706; --danger:#dc2626;
+    --bg:#F4F7FB; --card:#ffffff; --text:#0F2C46; --muted:#5b6b80;
+    --border:#e3e9f1; --ring:rgba(0,94,184,.25);
+    --radius:16px; --shadow:0 8px 24px -12px rgba(15,44,70,.18);
+  }
+  *{box-sizing:border-box}
+  html,body{margin:0;padding:0}
+  body{font-family:'Inter',system-ui,-apple-system,Segoe UI,Roboto,Helvetica,Arial,sans-serif;background:var(--bg);color:var(--text);line-height:1.5;-webkit-font-smoothing:antialiased}
+  a{color:var(--primary)}
+  h1,h2,h3,h4{margin:0}
+  .wrap{max-width:1100px;margin:0 auto;padding:0 16px}
+  /* header */
+  header{position:sticky;top:0;z-index:10;background:rgba(255,255,255,.85);backdrop-filter:saturate(180%) blur(8px);border-bottom:1px solid var(--border)}
+  .hd{display:flex;align-items:center;justify-content:space-between;padding:14px 0}
+  .logo{display:flex;gap:10px;align-items:center}
+  .logo .ic{width:38px;height:38px;border-radius:10px;background:linear-gradient(135deg,var(--primary),var(--secondary));display:flex;align-items:center;justify-content:center;color:#fff}
+  .logo h1{font-size:15px;font-weight:600}
+  .logo p{font-size:12px;color:var(--muted);margin:0}
+  .tag{font-size:11px;color:var(--muted)}
+  /* hero */
+  .hero{background:linear-gradient(180deg,#EAF3FB 0%,#F4F7FB 100%);border-bottom:1px solid var(--border)}
+  .hero-inner{padding:48px 0 56px}
+  .badge{display:inline-flex;gap:6px;align-items:center;font-size:12px;font-weight:500;padding:5px 12px;border-radius:999px;background:rgba(0,176,185,.12);color:#0a7c83;border:1px solid rgba(0,176,185,.3)}
+  .hero h2{font-size:clamp(28px,4vw,46px);font-weight:700;letter-spacing:-.02em;margin-top:14px;max-width:780px}
+  .hero h2 .hl{color:var(--primary)}
+  .hero p{font-size:17px;color:var(--muted);max-width:720px;margin-top:14px}
+  /* disclaimer */
+  .disclaimer{display:flex;gap:12px;background:rgba(0,176,185,.06);border:1px solid rgba(0,176,185,.3);padding:16px;border-radius:var(--radius);margin-top:28px}
+  .disclaimer svg{flex:0 0 20px;color:var(--secondary);margin-top:2px}
+  .disclaimer p{margin:0;font-size:14px;color:#3a4a60;line-height:1.55}
+  /* main */
+  main{padding:28px 0 40px;display:grid;grid-template-columns:1fr;gap:20px}
+  @media(min-width:900px){main{grid-template-columns:2fr 3fr}}
+  .card{background:var(--card);border:1px solid var(--border);border-radius:var(--radius);box-shadow:var(--shadow);padding:24px}
+  .card h3{font-size:17px;font-weight:600}
+  .card .sub{font-size:13px;color:var(--muted);margin-top:2px}
+  .field{margin-top:20px}
+  .field label{display:block;font-size:13px;font-weight:500;margin-bottom:8px}
+  .opts{display:grid;grid-template-columns:repeat(3,1fr);gap:8px}
+  .opt{cursor:pointer;text-align:left;padding:12px;border:1px solid var(--border);border-radius:10px;background:#fff;transition:all .15s}
+  .opt:hover{border-color:rgba(0,94,184,.4)}
+  .opt.active{border-color:var(--primary);background:rgba(0,94,184,.05);box-shadow:0 0 0 2px var(--ring)}
+  .opt b{display:block;font-size:14px;font-weight:600}
+  .opt span{font-size:11px;color:var(--muted)}
+  select{width:100%;padding:10px 12px;border:1px solid var(--border);border-radius:10px;background:#fff;font-size:14px;color:var(--text)}
+  select:focus{outline:none;box-shadow:0 0 0 2px var(--ring);border-color:var(--primary)}
+  .row{display:flex;justify-content:space-between;align-items:center}
+  .row .val{color:var(--primary);font-weight:600}
+  input[type=range]{width:100%;accent-color:var(--primary)}
+  /* results */
+  .results{display:grid;gap:16px}
+  .grid2{display:grid;grid-template-columns:1fr;gap:16px}
+  @media(min-width:600px){.grid2{grid-template-columns:1fr 1fr}}
+  .res{border:1px solid var(--border);border-radius:var(--radius);padding:20px;background:#fff}
+  .res.warn{border-color:rgba(217,119,6,.4);background:rgba(217,119,6,.05)}
+  .res.good{border-color:rgba(22,163,74,.4);background:rgba(22,163,74,.05)}
+  .res .lbl{font-size:11px;font-weight:600;color:var(--muted);text-transform:uppercase;letter-spacing:.06em}
+  .res .slbl{font-size:13px;color:#3a4a60;margin-top:2px}
+  .res .v{font-size:30px;font-weight:700;margin-top:12px}
+  .res .v small{font-size:13px;font-weight:400;color:var(--muted)}
+  .res .pct{font-size:12px;color:var(--muted);margin-top:4px}
+  .bk{margin-top:14px;padding-top:12px;border-top:1px solid rgba(0,0,0,.06);font-size:12px;color:var(--muted)}
+  .bk div{display:flex;justify-content:space-between;padding:2px 0}
+  .bk div b{color:#3a4a60;font-weight:500}
+  /* perfil panel */
+  .perfil{background:#fff;border:1px solid var(--border);border-radius:var(--radius);padding:24px;box-shadow:var(--shadow)}
+  .perfil .lbl{font-size:11px;font-weight:600;color:var(--muted);text-transform:uppercase;letter-spacing:.06em}
+  .perfil p.help{font-size:13px;color:var(--muted);margin:4px 0 14px}
+  .perfil .reco{display:flex;gap:12px;background:rgba(244,247,251,.7);border:1px solid var(--border);border-radius:12px;padding:14px;margin-top:16px}
+  .perfil .reco .ic{flex:0 0 40px;height:40px;background:rgba(0,94,184,.1);color:var(--primary);border-radius:10px;display:flex;align-items:center;justify-content:center}
+  .perfil .reco b{display:block;font-size:14px;font-weight:600}
+  .perfil .reco p{margin:4px 0 0;font-size:13.5px;color:var(--muted);line-height:1.55}
+  /* mei note */
+  .meinote{background:#fff;border:1px solid var(--border);border-radius:var(--radius);padding:20px;display:flex;gap:12px}
+  .meinote .ic{flex:0 0 40px;height:40px;background:rgba(22,163,74,.15);color:var(--success);border-radius:10px;display:flex;align-items:center;justify-content:center}
+  .meinote b{font-size:15px}
+  .meinote p{margin:4px 0 0;font-size:13.5px;color:var(--muted);line-height:1.55}
+  /* timeline */
+  .tl{background:#fff;border:1px solid var(--border);border-radius:var(--radius);padding:24px}
+  .tl h4{font-size:15px;font-weight:600;display:flex;align-items:center;gap:8px}
+  .tl h4 svg{color:var(--primary)}
+  .tl .it{display:flex;gap:14px;margin-top:14px}
+  .tl .yr{flex:0 0 88px;font-weight:700;color:var(--primary);font-size:14px}
+  .tl .desc{font-size:13.5px;color:var(--muted);line-height:1.55}
+  .note{font-size:11.5px;color:var(--muted);padding:0 8px;line-height:1.55}
+  footer{border-top:1px solid var(--border);margin-top:32px;padding:24px 0;text-align:center;font-size:12px;color:var(--muted)}
+</style>
 </head>
-
 <body>
 
-<h2>Calculadora</h2>
+<header>
+  <div class="wrap hd">
+    <div class="logo">
+      <div class="ic"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="4" y="2" width="16" height="20" rx="2"/><line x1="8" y1="6" x2="16" y2="6"/><line x1="16" y1="14" x2="16" y2="18"/><path d="M16 10h.01"/><path d="M12 10h.01"/><path d="M8 10h.01"/><path d="M12 14h.01"/><path d="M8 14h.01"/><path d="M12 18h.01"/><path d="M8 18h.01"/></svg></div>
+      <div><h1>Reforma Tributária</h1><p>Calculadora para pequenos negócios</p></div>
+    </div>
+    <span class="tag">Versão didática · 2027</span>
+  </div>
+</header>
 
-<input type="range" id="faturamento" min="1000" max="400000" step="1000" value="15000">
-<p id="valorFaturamento"></p>
+<section class="hero">
+  <div class="wrap hero-inner">
+    <span class="badge"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3v3M12 18v3M3 12h3M18 12h3M5.6 5.6l2.1 2.1M16.3 16.3l2.1 2.1M5.6 18.4l2.1-2.1M16.3 7.7l2.1-2.1"/></svg> Simule em menos de 1 minuto</span>
+    <h2>Como a <span class="hl">Reforma Tributária</span> afeta o seu negócio?</h2>
+    <p>Descubra de forma simples se vale a pena permanecer no Simples Nacional no modelo atual ou adotar o regime híbrido com <strong>CBS e IBS fora do DAS</strong> a partir de 2027.</p>
+  </div>
+</section>
+
+<div class="wrap">
+  <div class="disclaimer">
+    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><line x1="12" y1="16" x2="12" y2="12"/><line x1="12" y1="8" x2="12.01" y2="8"/></svg>
+    <p><strong>Como usar:</strong> esta calculadora complementa — não substitui — a análise das variáveis decorrentes do tipo de atividade da empresa, da estrutura de custos internos e do perfil de clientes e fornecedores. Use-a como ponto de partida para conversar com seu contador.</p>
+  </div>
+</div>
+
+<main class="wrap">
+  <!-- Formulário -->
+  <section class="card">
+    <h3>Seu negócio</h3>
+    <p class="sub">Preencha os dados para simular</p>
+
+    <div class="field">
+      <label>Porte da empresa</label>
+      <div class="opts" id="opt-porte">
+        <button class="opt" data-v="mei"><b>MEI</b><span>até R$ 81k/ano</span></button>
+        <button class="opt active" data-v="me"><b>ME</b><span>até R$ 360k/ano</span></button>
+        <button class="opt" data-v="epp"><b>EPP</b><span>até R$ 4.800k/ano</span></button>
+      </div>
+    </div>
+
+    <div class="field">
+      <label>Setor de atuação</label>
+      <select id="setor">
+        <option value="comercio">Comércio</option>
+        <option value="industria">Indústria</option>
+        <option value="servicos">Serviços em geral</option>
+        <option value="servicos_intelectuais">Serviços intelectuais (consultoria, advocacia…)</option>
+      </select>
+    </div>
+
+    <div class="field">
+      <label class="row"><span>Faturamento mensal</span><span class="val" id="fatLabel">R$ 15.000</span></label>
+      <input type="range" id="fat" min="1000" max="400000" step="1000" value="15000" />
+    </div>
+  </section>
+
+  <!-- Resultados -->
+  <section class="results">
+    <div class="grid2" id="cards"></div>
+    <div id="perfilBox"></div>
+    <div id="meiBox"></div>
+
+    <div class="tl">
+      <h4><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><line x1="12" y1="16" x2="12" y2="12"/><line x1="12" y1="8" x2="12.01" y2="8"/></svg> Linha do tempo da Reforma</h4>
+      <div class="it"><div class="yr">2026</div><div class="desc">Optantes pelo Simples Nacional estão desobrigados do teste de CBS/IBS (art. 348, III, c, LC 214/2025). Momento de avaliar permanecer no Simples puro ou migrar para o regime híbrido em 2027.</div></div>
+      <div class="it"><div class="yr">2027</div><div class="desc">Início da transição: passam a ser cobrados CBS e IBS, e PIS/Cofins são extintos. O IPI continua nas tabelas do Simples Nacional.</div></div>
+      <div class="it"><div class="yr">2029–2032</div><div class="desc">Transição gradual: ICMS e ISS reduzem progressivamente, enquanto o IBS aumenta.</div></div>
+      <div class="it"><div class="yr">2033</div><div class="desc">Novo sistema 100% em vigor. Apenas CBS + IBS.</div></div>
+    </div>
+
+    <p class="note">⚠️ Simulação didática baseada em estimativas oficiais (alíquota padrão de referência ~26,5%; primeira faixa do Simples Nacional). Setores com alíquotas reduzidas, regimes específicos e créditos efetivos de insumos não são contemplados. Não substitui análise contábil personalizada. Fontes: Receita Federal, LC 214/2025.</p>
+  </section>
+</main>
+
+<footer>Feito para apoiar pequenos empresários brasileiros · Inspirado nos simuladores da RFB, Contabilizei, IOB e OSP.</footer>
 
 <script>
-(function() {
+const SIMPLES_INFO = {
+  comercio:              { anexo:"Anexo I — Comércio",                rate:0.040, substituido:0.0305 },
+  industria:             { anexo:"Anexo II — Indústria",              rate:0.045, substituido:0.0305 },
+  servicos:              { anexo:"Anexo III — Serviços",              rate:0.060, substituido:0.0340 },
+  servicos_intelectuais: { anexo:"Anexo V — Serviços intelectuais",   rate:0.155, substituido:0.0483 },
+};
+const CBS_IBS = 0.265;
 
-  const SIMPLES_RATES = {
-    comercio: { anexo: "Anexo I — Comércio", rate: 0.04 },
-    industria: { anexo: "Anexo II — Indústria", rate: 0.045 },
-    servicos: { anexo: "Anexo III — Serviços", rate: 0.06 },
-    servicos_intelectuais: { anexo: "Anexo V — Serviços intelectuais", rate: 0.155 },
-  };
+const state = { porte:"me", setor:"comercio", fat:15000, perfil:"b2c" };
+const brl = v => v.toLocaleString("pt-BR",{style:"currency",currency:"BRL",maximumFractionDigits:0});
 
-  const CBS_IBS_PADRAO = 0.265;
-
-  const state = {
-    porte: "me",
-    setor: "comercio",
-    faturamento: 15000,
-    pctClientesPJ: 30,
-    pctInsumos: 25,
-  };
-
-  function brl(v) {
-    return v.toLocaleString("pt-BR", {
-      style: "currency",
-      currency: "BRL",
-      maximumFractionDigits: 0
-    });
+function compute(){
+  if(state.porte==="mei"){
+    const das = state.setor==="industria"?76.9: (state.setor==="servicos"||state.setor==="servicos_intelectuais")?75.9 : 71.9;
+    return {regimeAtualLabel:"MEI — DAS mensal fixo", atual:das, pctA:(das/Math.max(state.fat,1))*100, hib:false};
   }
+  const info = SIMPLES_INFO[state.setor];
+  const trib = state.fat*info.rate;
+  const dasRed = state.fat*(info.rate-info.substituido);
+  const cbsIbs = state.fat*CBS_IBS;
+  return {regimeAtualLabel:info.anexo, atual:trib, pctA:info.rate*100, hib:true, hibTot:dasRed+cbsIbs, hibPct:((dasRed+cbsIbs)/Math.max(state.fat,1))*100, dasRed, cbsIbs};
+}
 
-  function compute() {
+function resCard({label,sub,val,pct,tone,breakdown}){
+  const bk = breakdown? `<div class="bk">${breakdown.map(([k,v])=>`<div><span>${k}</span><b>${v}</b></div>`).join("")}</div>`:"";
+  return `<div class="res ${tone==='good'?'good':tone==='warn'?'warn':''}"><div class="lbl">${label}</div><div class="slbl">${sub}</div><div class="v">${brl(val)}<small>/mês</small></div><div class="pct">≈ ${pct.toFixed(1)}% do faturamento</div>${bk}</div>`;
+}
 
-    let result;
+const PERFIL = {
+  b2c:{t:"Permanecer no Simples Nacional tradicional tende a ser mais vantajoso", d:"Seu cliente final (consumidor pessoa física) não aproveita crédito de CBS/IBS, então recolher esses tributos por fora do DAS aumenta sua carga sem ganho competitivo.", ic:'<svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg>'},
+  b2b:{t:"Avaliar com a contabilidade a adesão ao regime híbrido", d:"Clientes PJ valorizam notas com destaque de CBS/IBS porque geram crédito tributário. O regime híbrido pode tornar seu negócio mais competitivo, especialmente se você tem volume relevante de insumos com crédito.", ic:'<svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M6 22V4a2 2 0 0 1 2-2h8a2 2 0 0 1 2 2v18Z"/><path d="M6 12H4a2 2 0 0 0-2 2v6a2 2 0 0 0 2 2h2"/><path d="M18 9h2a2 2 0 0 1 2 2v9a2 2 0 0 1-2 2h-2"/><path d="M10 6h4"/><path d="M10 10h4"/><path d="M10 14h4"/><path d="M10 18h4"/></svg>'},
+  meio:{t:"Decisão depende da estrutura de custos e clientes", d:"Com perfil misto, a vantagem do híbrido depende do peso real das vendas B2B, da margem e do volume de insumos. Simule cenários com seu contador antes de optar.", ic:'<svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m16 16 3-8 3 8c-.87.65-1.92 1-3 1s-2.13-.35-3-1Z"/><path d="m2 16 3-8 3 8c-.87.65-1.92 1-3 1s-2.13-.35-3-1Z"/><path d="M7 21h10"/><path d="M12 3v18"/><path d="M3 7h2c2 0 5-1 7-2 2 1 5 2 7 2h2"/></svg>'}
+};
 
-    if (state.porte === "mei") {
+function render(){
+  const r = compute();
+  document.getElementById("fatLabel").textContent = brl(state.fat);
 
-      const dasMei = 75.9;
-
-      result = {
-        atualValor: dasMei,
-        atualPct: (dasMei / Math.max(state.faturamento, 1)) * 100,
-        hibridoValor: dasMei,
-        hibridoPct: (dasMei / Math.max(state.faturamento, 1)) * 100,
-        recomendacao: "Manter MEI"
-      };
-
-    } else {
-
-      const rateSimples = SIMPLES_RATES[state.setor].rate;
-      const tributoSimples = state.faturamento * rateSimples;
-
-      const vendasPJ = state.faturamento * (state.pctClientesPJ / 100);
-      const insumos = state.faturamento * (state.pctInsumos / 100);
-
-      const cbsIbsDevido = vendasPJ * CBS_IBS_PADRAO;
-      const creditoInsumos = insumos * CBS_IBS_PADRAO;
-
-      const cbsIbsLiquido = Math.max(cbsIbsDevido - creditoInsumos, 0);
-
-      const totalHibrido = tributoSimples + cbsIbsLiquido;
-
-      const diff = totalHibrido - tributoSimples;
-
-      // ✅ CORREÇÃO AQUI — removido o "n" que quebrava o código
-      const recomendacao = state.pctClientesPJ >= 50 && diff < tributoSimples * 0.15
-        ? "Considerar regime híbrido"
-        : "Manter Simples Nacional padrão";
-
-      result = {
-        atualValor: tributoSimples,
-        atualPct: rateSimples * 100,
-        hibridoValor: totalHibrido,
-        hibridoPct: (totalHibrido / Math.max(state.faturamento, 1)) * 100,
-        recomendacao
-      };
-    }
-
-    return result;
+  const cards = document.getElementById("cards");
+  let html = resCard({label:"Regime atual", sub:r.regimeAtualLabel, val:r.atual, pct:r.pctA, tone:"neutral"});
+  if(r.hib){
+    html += resCard({label:"Regime híbrido", sub:"CBS/IBS fora do DAS (estimativa antes de créditos)", val:r.hibTot, pct:r.hibPct, tone:"warn", breakdown:[["DAS reduzido",brl(r.dasRed)],["CBS + IBS (~26,5%)",brl(r.cbsIbs)]]});
+  } else {
+    html += resCard({label:"Após a reforma", sub:"MEI não é impactado — DAS fixo permanece", val:r.atual, pct:r.pctA, tone:"good"});
   }
+  cards.innerHTML = html;
 
-  function render() {
-    const r = compute();
+  const pbox = document.getElementById("perfilBox");
+  if(r.hib){
+    const p = PERFIL[state.perfil];
+    pbox.innerHTML = `<div class="perfil">
+      <div class="lbl">Perfil do seu negócio</div>
+      <p class="help">Informativo — orienta a leitura do resultado, não altera o cálculo.</p>
+      <div class="opts" id="opt-perfil">
+        <button class="opt ${state.perfil==='b2c'?'active':''}" data-v="b2c"><b>Majoritariamente B2C</b><span>Vende para consumidor final</span></button>
+        <button class="opt ${state.perfil==='b2b'?'active':''}" data-v="b2b"><b>Majoritariamente B2B</b><span>Vende para outras empresas</span></button>
+        <button class="opt ${state.perfil==='meio'?'active':''}" data-v="meio"><b>Meio a meio</b><span>Mistura B2C e B2B</span></button>
+      </div>
+      <div class="reco"><div class="ic">${p.ic}</div><div><b>${p.t}</b><p>${p.d}</p></div></div>
+    </div>`;
+    pbox.querySelectorAll("#opt-perfil .opt").forEach(b=>b.addEventListener("click",()=>{state.perfil=b.dataset.v;render();}));
+  } else pbox.innerHTML = "";
 
-    document.getElementById("valorFaturamento").innerText =
-      "Faturamento: " + brl(state.faturamento) +
-      " | Recomendação: " + r.recomendacao;
-  }
+  const mbox = document.getElementById("meiBox");
+  if(state.porte==="mei"){
+    mbox.innerHTML = `<div class="meinote"><div class="ic"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg></div><div><b>MEI não foi impactado pela Reforma Tributária</b><p>O DAS fixo mensal continua valendo. Avalie sair do MEI apenas se ultrapassar o limite de R$ 81.000/ano ou se seus clientes PJ exigirem nota com crédito de CBS/IBS.</p></div></div>`;
+  } else mbox.innerHTML = "";
+}
 
-  document.getElementById("faturamento").addEventListener("input", (e)=> {
-    state.faturamento = Number(e.target.value);
-    render();
-  });
-
+document.querySelectorAll("#opt-porte .opt").forEach(b=>b.addEventListener("click",()=>{
+  state.porte=b.dataset.v;
+  document.querySelectorAll("#opt-porte .opt").forEach(x=>x.classList.toggle("active",x.dataset.v===state.porte));
   render();
-
-})();
+}));
+document.getElementById("setor").addEventListener("change",e=>{state.setor=e.target.value;render();});
+document.getElementById("fat").addEventListener("input",e=>{state.fat=Number(e.target.value);render();});
+render();
 </script>
-
 </body>
 </html>
-   
