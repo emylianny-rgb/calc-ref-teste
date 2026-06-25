@@ -32,26 +32,19 @@
   .tag{font-size:11px;color:var(--muted);background:var(--border);padding:4px 8px;border-radius:6px;font-weight:500}
   
   /* Hero */
-  .hero {background: linear-gradient(180deg,#EAF3FB 0%,#F4F7FB 100%);border-bottom: 1px solid var(--border);/* 32px no topo, 0 nas laterais, 20px na parte inferior */
-  padding: 32px 0 20px; }
+  .hero {background: linear-gradient(180deg,#EAF3FB 0%,#F4F7FB 100%);border-bottom: 1px solid var(--border);padding: 32px 0 20px; }
   .badge{display:inline-flex;gap:6px;align-items:center;font-size:12px;font-weight:600;padding:6px 14px;border-radius:999px;background:rgba(0,176,185,.1);color:#0a7c83;border:1px solid rgba(0,176,185,.25)}
   .hero h2{font-size:24px;font-weight:800;letter-spacing:-.02em;margin-top:16px;line-height:1.25;color:#071D31}
   .hero h2 .hl{color:var(--primary);position:relative}
   .hero p{font-size:15px;color:var(--muted);margin:12px 0 0;line-height:1.6}
   
   /* Disclaimer */
-  .disclaimer {display: flex;gap: 12px;background: rgba(0, 176, 185, .05);border: 1px solid rgba(0, 176, 185, .2);padding: 16px;border-radius: var(--radius);
-  /* 20px no topo (idêntico ao fundo do hero), 0 nas laterais, 24px abaixo */margin: 20px 0 24px; }
+  .disclaimer {display: flex;gap: 12px;background: rgba(0, 176, 185, .05);border: 1px solid rgba(0, 176, 185, .2);padding: 16px;border-radius: var(--radius);margin: 20px 0 24px; }
   .disclaimer svg{flex-shrink:0;color:var(--secondary);margin-top:2px}
   .disclaimer p{margin:0;font-size:13.5px;color:#3a4a60;line-height:1.6}
   
   /* Main - Estrutura Responsiva Mobile-First */
- main {
-  padding: 0 0 40px; 
-  display: grid;
-  grid-template-columns: 1fr;
-  gap: 24px;
-}
+  main {padding: 0 0 40px; display: grid; grid-template-columns: 1fr; gap: 24px;}
   .card{background:var(--card);border:1px solid var(--border);border-radius:var(--radius);box-shadow:var(--shadow);padding:20px}
   .card h3{font-size:18px;font-weight:700}
   .card .sub{font-size:13px;color:var(--muted);margin:4px 0 0}
@@ -123,9 +116,9 @@
   .note{font-size:11.5px;color:var(--muted);padding:0 4px;line-height:1.6;margin-top:8px}
   footer{border-top:1px solid var(--border);margin-top:40px;padding:24px 16px;text-align:center;font-size:12px;color:var(--muted);line-height:1.5}
 
-  /* Media Queries Progressivas (Mídias Grandes / Desktop) */
+  /* Media Queries Progressivas */
   @media(min-width:480px){
-    .opts{grid-template-columns:repeat(3,1fr)} /* Vira colunas horizontais a partir de phablets/tablets */
+    .opts{grid-template-columns:repeat(3,1fr)}
   }
   
   @media(min-width:768px) {
@@ -137,7 +130,7 @@
   
   @media(min-width:900px){
     main{grid-template-columns:1fr 1.4fr;gap:28px;align-items:start}
-    .card{position:sticky;top:90px;padding:28px} /* Fixa o formulário ao rolar a página no desktop */
+    .card{position:sticky;top:90px;padding:28px}
     .results{gap:24px}
     .hero{padding:48px 0}
     .hero h2{font-size:38px}
@@ -276,28 +269,32 @@ function compute(){
   
   const info = obterRegrasFaixa(state.setor, state.fat);
   const trib = state.fat * info.rate;
-  const dasRed = state.fat * (info.rate - info.substituido);
+  
+  // Cálculo exato das alíquotas efetivas individuais para o Híbrido
+  const rateRed = info.rate - info.substituido;
+  const dasRed = state.fat * rateRed;
   const cbsIbs = state.fat * CBS_IBS_TRANSICAO;
   
   return {
-    regimeAtualLabel: info.anexo, 
+    regimeAtualLabel: `${info.anexo} · Alíquota: ${(info.rate * 100).toFixed(2)}%`, 
     atual: trib, 
     pctA: info.rate * 100, 
     hib: true, 
     hibTot: dasRed + cbsIbs, 
     hibPct: ((dasRed + cbsIbs) / Math.max(state.fat, 1)) * 100, 
     dasRed, 
-    cbsIbs
+    cbsIbs,
+    pctDasRed: rateRed * 100 // Alíquota do DAS reduzido enviada ao render
   };
 }
 
 function resCard({label,sub,val,pct,tone,breakdown}){
   const bk = breakdown? `<div class="bk">${breakdown.map(([k,v])=>`<div><span>${k}</span><b>${v}</b></div>`).join("")}</div>`:"";
-  return `<div class="res ${tone==='good'?'good':tone==='warn'?'warn':''}"><div class="lbl">${label}</div><div class="slbl">${sub}</div><div class="v">${brl(val)}<small>/mês</small></div><div class="pct">≈ ${pct.toFixed(1)}% do faturamento</div>${bk}</div>`;
+  return `<div class="res ${tone==='good'?'good':tone==='warn'?'warn':''}"><div class="lbl">${label}</div><div class="slbl">${sub}</div><div class="v">${brl(val)}<small>/mês</small></div><div class="pct">≈ ${pct.toFixed(2)}% do faturamento</div>${bk}</div>`;
 }
 
 const PERFIL = {
-  b2c:{t:"Permanecer no Simples Nacional tradicional tende a ser mais vantajoso", d:"Seu cliente final (consumidor pessoa física) não aproveita crédito de CBS/IBS, então recolher esses tributos por fora do DAS aumenta sua carga sem ganho competitivo.", ic:'<svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg>'},
+  b2c:{t:"Permanecer no Simples Nacional tradicional tende a ser mais avantajoso", d:"Seu cliente final (consumidor pessoa física) não aproveita crédito de CBS/IBS, então recolher esses tributos por fora do DAS aumenta sua carga sem ganho competitivo.", ic:'<svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg>'},
   b2b:{t:"Avaliar com a contabilidade a adesão ao regime híbrido", d:"Clientes PJ valorizam notas com destaque de CBS/IBS porque geram crédito tributário. O regime híbrido pode tornar seu negócio mais competitivo, especialmente nos exercícios de 2027/2028.", ic:'<svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M6 22V4a2 2 0 0 1 2-2h8a2 2 0 0 1 2 2v18Z"/><path d="M6 12H4a2 2 0 0 0-2 2v6a2 2 0 0 0 2 2h2"/><path d="M18 9h2a2 2 0 0 1 2 2v9a2 2 0 0 1-2 2h-2"/><path d="M10 6h4"/><path d="M10 10h4"/><path d="M10 14h4"/><path d="M10 18h4"/></svg>'},
   meio:{t:"Decisão depende da estrutura de custos e clientes", d:"Com perfil misto, a vantagem do híbrido depende do peso real das vendas B2B, da margem e do volume de insumos. Simule cenários com seu contador antes de optar.", ic:'<svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m16 16 3-8 3 8c-.87.65-1.92 1-3 1s-2.13-.35-3-1Z"/><path d="m2 16 3-8 3 8c-.87.65-1.92 1-3 1s-2.13-.35-3-1Z"/><path d="M7 21h10"/><path d="M12 3v18"/><path d="M3 7h2c2 0 5-1 7-2 2 1 5 2 7 2h2"/></svg>'}
 };
@@ -309,7 +306,17 @@ function render(){
   const cards = document.getElementById("cards");
   let html = resCard({label:"Regime atual", sub:r.regimeAtualLabel, val:r.atual, pct:r.pctA, tone:"neutral"});
   if(r.hib){
-    html += resCard({label:"Regime híbrido (2027/2028)", sub:"CBS/IBS fora do DAS (foco nos exerc. 27 e 28)", val:r.hibTot, pct:r.hibPct, tone:"warn", breakdown:[["DAS Reduzido (Anexo 20)",brl(r.dasRed)],["CBS + IBS Transição (8,9%)",brl(r.cbsIbs)]]});
+    html += resCard({
+      label:"Regime híbrido (2027/2028)", 
+      sub:"CBS/IBS fora do DAS (foco nos exerc. 27 e 28)", 
+      val:r.hibTot, 
+      pct:r.hibPct, 
+      tone:"warn", 
+      breakdown:[
+        [`DAS Reduzido (Anexo 20) — Alíquota: ${r.pctDasRed.toFixed(2)}%`, brl(r.dasRed)],
+        [`CBS + IBS Transição — Alíquota: ${(CBS_IBS_TRANSICAO * 100).toFixed(1)}%`, brl(r.cbsIbs)]
+      ]
+    });
   } else {
     html += resCard({label:"Após a reforma", sub:"MEI não é impactado — DAS fixo permanece", val:r.atual, pct:r.pctA, tone:"good"});
   }
@@ -335,7 +342,7 @@ function render(){
   if(state.porte==="mei"){
     mbox.innerHTML = `<div class="meinote"><div class="ic"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg></div><div><b>MEI não foi impactado pela Reforma Tributária</b><p>O DAS fixo mensal continua valendo. Avalie sair do MEI apenas se ultrapassar o limite de R$ 81.000/ano ou se seus clientes PJ exigirem nota com crédito de CBS/IBS.</p></div></div>`;
   } else if(state.porte==="epp"){
-    mbox.innerHTML = `<div class="meinote" style="border-color: rgba(217,119,6,.4); background: rgba(217,119,6,.03);"><div class="ic" style="background: rgba(217,119,6,.15); color: var(--warning);"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg></div><div><b>Explicação Legal: Limite de R$ 3,6 Milhões no Regime Híbrido (<a href="https://www.planalto.gov.br/ccivil_03/leis/lcp/lcp214.htm" target="_blank">LC 214/2025</a>)</b><p>Embora o teto para enquadramento como EPP seja de R$ 4,8M/ano, a legislação da Reforma Tributária preserva o <b>sublimite de R$ 3,6 milhões</b> para o recolhimento unificado de tributos sobre o consumo. Até R$ 3,6M, a apuração externa de CBS e IBS é uma <b>escolha opcional</b> da empresa (Regime Híbrido). Acima de R$ 3,6M/ano, o negócio atinge obrigatoriamente o sublimite, sendo forçado a apurar CBS e IBS fora do Simples por imposição legal (débito/crédito), perdendo o direito à opção.</p></div></div>`;
+    mbox.innerHTML = `<div class="meinote" style="border-color: rgba(217,119,6,.4); background: rgba(217,119,6,.03);"><div class="ic" style="background: rgba(217,119,6,.15); color: var(--warning);"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg></div><div><b>Explicação Legal: Limite de R$ 3,6 Milhões no Regime Híbrido (<a href="https://www.planalto.gov.br/ccivil_03/leis/lcp/lcp214.htm" target="_blank">LC 214/2025</a>)</b><p>Embora o teto para enquadramento como EPP seja de R$ 4,8M/ano, a legislação da Reforma Tributária preserva o <b>sublimite de R$ 3,6 milhões</b> para o recolhimento unificado de tributos sobre o consumo. Até R$ 3,6M, a apuração externa de CBS e IBS é uma <b>escolha opcional</b> da empresa (Regime Híbrido). Acima de R$ 3,6M/ano, o negócio atinge obrigatoriamente o sublimite, sendo forçado a apurar CBS e IBS fora do Simples por imposition legal (débito/crédito), perdendo o direito à opção.</p></div></div>`;
   } else {
     mbox.innerHTML = "";
   }
